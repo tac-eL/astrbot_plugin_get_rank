@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 
 def get_rank():
-    target = "https://ctfd.iseal.ac.cn/scoreboard"
+    target = "http://192.168.1.16:8000/scoreboard"
     req = requests.get(target, verify=False)
     soup = BeautifulSoup(req.text, "lxml")
 
