@@ -38,7 +38,7 @@ def get_rank_image(url="http://192.168.1.16:8000/scoreboard") -> bytes:
     title = "排行榜"
     font_path = "C:/Windows/Fonts/msyh.ttc"
     if not os.path.exists(font_path):
-        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+        font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
 
     font_size = 32
     line_height = 50
@@ -124,7 +124,6 @@ def get_rank(target="http://192.168.1.16:8000/scoreboard"):
 class MyPlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)
-        self.black_flag = False
 
     async def initialize(self):
         """可选择实现异步的插件初始化方法，当实例化该插件类之后会自动调用该方法。"""
@@ -132,27 +131,34 @@ class MyPlugin(Star):
     @filter.command("black_switch")
     async def my_switch(self, event: AstrMessageEvent):
 
-        payload = None
-        if self.black_flag:
+        token = "ctfd_ee743880fb2a711d8bb91ba5f1e6557e608b1fe6337477c966915ca36c2b9f28"
+        headers = {"Authorization": f"Token {token}"}
+
+        res = requests.get("http://192.168.1.16:8000/scoreboard/")
+        if res.status_code == 403:
             payload = {"challenge_visibility": "private", "account_visibility": "public", "score_visibility": "public",
                        "registration_visibility": "public"}
-            black_flag = False
+
+            requests.patch("http://192.168.1.16:8000/api/v1/configs", headers=headers, json=payload)
+            yield event.plain_result("关闭黑灯")
+            return
+
         else:
             payload = {"challenge_visibility": "private", "account_visibility": "public", "score_visibility": "hidden",
                        "registration_visibility": "public"}
-            black_flag = True
 
-        cookies = {"session": "c8d431f3-8bac-4144-a19b-5d6d3626aad4.l4iGUCVFPNOaFqK4f3gK4R46u9M"}
-
-        requests.patch("http://192.168.1.16:8000/api/v1/configs", cookies=cookies,json=payload)
-        yield event.plain_result("开启黑灯" if black_flag else "关闭黑灯")
+            requests.patch("http://192.168.1.16:8000/api/v1/configs", headers=headers, json=payload)
+            yield event.plain_result("开启黑灯")
+            return
 
     @filter.command("rank")
     async def helloworld(self, event: AstrMessageEvent):
         """get iseal-ctf rank"""  # 这是 handler 的描述，将会被解析方便用户了解插件内容。建议填写。
 
-        if self.black_flag:
+        res = requests.get("http://192.168.1.16:8000/scoreboard/")
+        if res.status_code == 403:
             yield event.plain_result("黑灯咯，玩一会吧")
+            return
 
         img_bytes = get_rank_image()
         if img_bytes:
