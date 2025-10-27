@@ -38,7 +38,7 @@ def get_rank_image(url="http://192.168.1.16:8000/scoreboard") -> bytes:
     title = "排行榜"
     font_path = "C:/Windows/Fonts/msyh.ttc"
     if not os.path.exists(font_path):
-        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+        font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
 
     font_size = 32
     line_height = 50
