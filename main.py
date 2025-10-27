@@ -135,7 +135,7 @@ class MyPlugin(Star):
         headers = {"Authorization": f"Token {token}"}
 
         res = requests.get("http://192.168.1.16:8000/scoreboard/")
-        if res.status_code == 403:
+        if res.status_code == 404:
             payload = {"challenge_visibility": "private", "account_visibility": "public", "score_visibility": "public",
                        "registration_visibility": "public"}
 
@@ -156,7 +156,7 @@ class MyPlugin(Star):
         """get iseal-ctf rank"""  # 这是 handler 的描述，将会被解析方便用户了解插件内容。建议填写。
 
         res = requests.get("http://192.168.1.16:8000/scoreboard/")
-        if res.status_code == 403:
+        if res.status_code == 404:
             yield event.plain_result("黑灯咯，玩一会吧")
             return
 
