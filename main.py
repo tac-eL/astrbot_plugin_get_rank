@@ -134,8 +134,8 @@ class MyPlugin(Star):
         token = "ctfd_ee743880fb2a711d8bb91ba5f1e6557e608b1fe6337477c966915ca36c2b9f28"
         headers = {"Authorization": f"Token {token}"}
 
-        res = requests.get("http://192.168.1.16:8000/scoreboard/")
-        if res.status_code == 404:
+        res = requests.get("http://192.168.1.16:8000/scoreboard")
+        if res.status_code == 403:
             payload = {"challenge_visibility": "private", "account_visibility": "public", "score_visibility": "public",
                        "registration_visibility": "public"}
 
@@ -155,8 +155,8 @@ class MyPlugin(Star):
     async def helloworld(self, event: AstrMessageEvent):
         """get iseal-ctf rank"""  # 这是 handler 的描述，将会被解析方便用户了解插件内容。建议填写。
 
-        res = requests.get("http://192.168.1.16:8000/scoreboard/")
-        if res.status_code == 404:
+        res = requests.get("http://192.168.1.16:8000/scoreboard")
+        if res.status_code == 403:
             yield event.plain_result("黑灯咯，玩一会吧")
             return
 
